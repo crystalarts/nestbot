@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "@discordjs/rest": "^2.2.0",
+    "axios": "^1.6.7",
+    "cheerio": "^1.0.0-rc.12",
+    "discord-api-types": "^0.37.70",
+    "discord.js": "^13.16.0",
+    "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.3.2"
+  },
+  "name": "nestbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
