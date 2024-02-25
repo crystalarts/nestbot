@@ -30,34 +30,4 @@ fs.readdirSync("./events").forEach((dirs) => {
   }
 });
 
-client.on('messageCreate', async (message) => {
-  if (message.author.bot) return;
-
-  try {
-    const [username, repo] = message.content.split('/');
-
-    const apiUrl = `https://api.github.com/repos/${username}/${repo}`;
-
-    const response = await axios.get(apiUrl);
-    const data = response.data;
-
-    if (!data || Object.keys(data).length === 0) {
-        throw new Error('Repository not found.');
-    }
-
-    const thumbnailUrl = data.owner.avatar_url;
-
-    const embed = new MessageEmbed()
-        .setAuthor({ name: username, iconURL: thumbnailUrl, url: 'https://github.com/' + username})
-        .setTitle(username + "/" + repo)
-        .setURL(data.html_url)
-        .setDescription(data.description || 'No description provided.')
-        .setFooter({ text: `⭐ ${data.stargazers_count} • 👀 ${data.watchers_count} • 🍴 ${data.forks} • 🎈 ${data.open_issues}` });
-
-    message.reply({ embeds: [embed] });
-  } catch (error) {
-    return;
-  }
-});
-
 module.exports = client;
