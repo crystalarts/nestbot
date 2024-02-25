@@ -6,8 +6,11 @@ const domainsToCheck = [
     { name: "nestnet.pl", url: "https://nestnet.pl/" },
     { name: "status.nestnet.pl", url: "https://status.nestnet.pl/" },
     { name: "dash.nestnet.pl", url: "https://dash.nestnet.pl/" },
+    { name: "billing.nestnet.pl", url: "https://billing.nestnet.pl/" },
     { name: "dash.login.nestnet.pl", url: "https://dash.login.nestnet.pl/" },
     { name: "dash.register.nestnet.pl", url: "https://dash.register.nestnet.pl/" },
+    { name: "cloudwave.pl", url: "https://cloudwave.pl/" },
+    { name: "status.cloudwave.pl", url: "https://status.cloudwave.pl/" },
     { name: "rapidbot.pl", url: "https://rapidbot.pl/" },
     { name: "uptime.rapidbot.pl", url: "https://uptime.rapidbot.pl/" },
     { name: "rapidcraft.pl", url: "https://rapidcraft.pl/" },
@@ -40,8 +43,11 @@ module.exports = {
                 notWorkingServices++;
                 break;
             case 'error':
-                if (result.error === 'Przekroczono czas rządania.') {
+                if (result.error === 'Request timed out.') {
                     notWorkingText += `⌛ ${result.domain}: ${result.error}\n`;
+                    notWorkingServices++;
+                } else if (result.error === 'Permission denied (Forbidden).') {
+                    notWorkingText += `⚠️ ${result.domain}: ${result.error}\n`
                     notWorkingServices++;
                 } else {
                     notWorkingText += `❓ ${result.domain}: ${result.error}\n`;

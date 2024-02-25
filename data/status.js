@@ -15,13 +15,15 @@ async function checkStatus(domains) {
         } catch (error) {
             let errorMessage = '';
             if (error.code === 'ECONNABORTED') {
-                errorMessage = 'Przekroczono czas rządania.';
+                errorMessage = 'Request timed out.';
             } else if (error.code === 'ENOTFOUND') {
-                errorMessage = 'Adres URL nie został znaleziony.';
+                errorMessage = 'Address URL not found.';
             } else if (error.code === 'ECONNREFUSED') {
-                errorMessage = 'Połączenie zostało odrzucone.';
+                errorMessage = 'The connection was rejected.';
             } else if (error.code === 'ECONNRESET') {
-                errorMessage = 'Połączenie zostało zresetowane.';
+                errorMessage = 'The connection has been reset.';
+            } else if (error.response && error.response.status === 403) {
+                errorMessage = 'Permission denied (Forbidden).'
             } else {
                 errorMessage = error.message;
             }
