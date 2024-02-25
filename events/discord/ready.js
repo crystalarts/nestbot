@@ -10,10 +10,13 @@ module.exports = {
   execute: async (client) => {
     console.log("Zalogowano bota");
 
+    const packageData = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+    const packageVersion = packageData.version;
+
     client.user.setPresence({
       activities: [
         {
-          name: "NestNet.pl v1.0.0",
+          name: "NestNet.pl v" + packageVersion,
         },
       ],
     });
