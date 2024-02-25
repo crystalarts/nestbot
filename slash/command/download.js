@@ -14,6 +14,8 @@ module.exports = {
     const packageData = JSON.parse(fs.readFileSync("./package.json", "utf8"));
     const packageVersion = packageData.version;
 
+    let text = '';
+
     const owner = "nestnetpl";
     const repo = "nestbot";
     const commits = await fetchCommits(owner, repo);
@@ -26,6 +28,10 @@ module.exports = {
         };
     });
 
+    commitInfo.forEach(info => {
+        text += `[\`${info.sha}\`](${info.url}) - ${info.message}\n`;
+    });
+
     const embed = new MessageEmbed()
         .setAuthor({
           name: `Download the latest version`,
@@ -35,18 +41,15 @@ module.exports = {
             name: "Latest version dev-1.0.0",
             value: `\` Unable to download the application \``
         })
-        .setColor("#51c0c1");
-
-    commitInfo.forEach(info => {
-        embed.addFields({
+        .addFields({
             name: "NestBot v" + packageVersion,
-            value: `[\`${info.sha}\`](${info.url}) - ${info.message}`
-        });
-        embed.addFields({
+            value: text
+        })
+        .addFields({
             name: "Other download",
             value: `\`Soon\``
-        });
-    });
+        })
+        .setColor("#51c0c1");
 
     await interaction.followUp({ embeds: [embed] });
   }
