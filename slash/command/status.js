@@ -11,9 +11,6 @@ const domainsToCheck = [
     { name: "dash.register.nestnet.pl", url: "https://dash.register.nestnet.pl/" },
     { name: "cloudwave.pl", url: "https://cloudwave.pl/" },
     { name: "status.cloudwave.pl", url: "https://status.cloudwave.pl/" },
-    { name: "rapidbot.pl", url: "https://rapidbot.pl/" },
-    { name: "uptime.rapidbot.pl", url: "https://uptime.rapidbot.pl/" },
-    { name: "rapidcraft.pl", url: "https://rapidcraft.pl/" },
 ];
 
 module.exports = {
