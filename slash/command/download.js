@@ -1,5 +1,14 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const { MessageEmbed } = require("discord.js");
+const {
+  Client,
+  Intents,
+  MessageEmbed,
+  Collection,
+  GuildMember,
+  MessageActionRow,
+  MessageSelectMenu,
+  MessageButton,
+} = require("discord.js");
 const axios = require("axios");
 const fs = require("fs");
 
@@ -19,6 +28,34 @@ module.exports = {
       await interaction.reply({ content: `You can use this command again in ${remainingTime} seconds.`, ephemeral: true });
       return;
     }
+
+    const row = new MessageActionRow().addComponents(
+      new MessageSelectMenu()
+        .setCustomId("select")
+        .setPlaceholder("Please select the appropriate category")
+        .addOptions([
+          {
+            label: "NestBot",
+            description: "Click me",
+            emoji: "1198229791854313512",
+            value: "nestbot",
+          },
+          {
+            label: "NestNet Now",
+            description: "Click me",
+            emoji: "1198230066283425813",
+            value: "nestnetnow",
+          },
+        ])
+    );
+
+    const filter = (i) =>
+      i.customId === "select" && i.user.id === interaction.user.id;
+
+    const collector = interaction.channel.createMessageComponentCollector({
+      filter,
+      time: 15000,
+    });
 
     await interaction.deferReply();
 
@@ -47,34 +84,84 @@ module.exports = {
     const releases = await fetchReleases(owner, repo);
 
     releases.forEach(release => {
-        releasesText += `[\`${release.name}\`](${release.html_url}) - ${release.tag_name}\n`;
+        releasesText += `[\`${release.name}\`](${release.zipball_url}) - ${release.tag_name}\n`;
     });
 
     const embed = new MessageEmbed()
-        .setAuthor({
-            name: `Download the latest version`,
-            iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
-        })
-        .addFields({
-            name: "Latest version dev-1.0.0",
-            value: `\` Unable to download the application \``
-        })
-        .addFields({
-            name: "NestBot (downloadable versions)",
-            value: releasesText
-        })
-        .addFields({
-            name: "NestBot (5 latest commits)",
-            value: text
-        })
-        .addFields({
-            name: "Other download",
-            value: `\` Soon \``
-        })
-        .setColor("#51c0c1");
+      .setAuthor({
+        name: `Download the latest version`,
+        iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
+      })
+      .setDescription(
+        "Select one item from the select menu to see available versions for download."
+      )
+      .setColor("#51c0c1")
+      .setFooter({ text: "NetNet.pl © 2024 ・ Version: " + packageVersion });
+
+    await interaction.followUp({
+      embeds: [embed],
+      components: [row],
+    });
+
+    collector.on("collect", async (i) => {
+      if (i.customId === "select") {
+        if (i.values[0] === "nestbot") {
+          i.update({
+            embeds: [
+              new MessageEmbed()
+                .setAuthor({
+                    name: `Download the latest version of NestBot`,
+                    iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
+                })
+                .addFields({
+                    name: "Downloadable versions:",
+                    value: releasesText
+                })
+                .addFields({
+                    name: "5 latest commits:",
+                    value: text
+                })
+                .setFooter({ text: "NetNet.pl © 2024 ・ Version: " + packageVersion })
+                .setColor("#51c0c1")
+            ],
+            allowedMentions: { repliedUser: false },
+            components: [row],
+          });
+        }
+        if (i.values[0] === "nestnetnow") {
+          i.update({
+            embeds: [
+              new MessageEmbed()
+                .setAuthor({
+                    name: `Download the latest version`,
+                    iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
+                })
+                .addFields({
+                    name: "Latest version ???",
+                    value: `\` Unable to download the application \``
+                })
+                .addFields({
+                    name: "NestNet Now (downloadable versions)",
+                    value: `\` Soon \``
+                })
+                .addFields({
+                    name: "NestNet Now (5 latest commits)",
+                    value: `\` Soon \``
+                })
+                .addFields({
+                    name: "Other download",
+                    value: `\` Soon \``
+                })
+                .setFooter({ text: "NetNet.pl © 2024 ・ Version: " + packageVersion })
+                .setColor("#51c0c1")
+            ],
+            components: [row],
+          });
+        }
+      }
+    });
 
     lastCommandUsage[interaction.user.id] = currentTime;
-    await interaction.followUp({ embeds: [embed] });
   }
 }
 
