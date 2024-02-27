@@ -3,12 +3,23 @@ const { MessageEmbed } = require("discord.js");
 const axios = require("axios");
 const fs = require("fs");
 
+const lastCommandUsage = {};
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("download")
     .setDescription("Check available versions for download!"),
 
   async execute(client, interaction) {
+    const cooldown = 10000; 
+    const currentTime = Date.now();
+
+    if (lastCommandUsage[interaction.user.id] && (currentTime - lastCommandUsage[interaction.user.id]) < cooldown) {
+      const remainingTime = Math.ceil((lastCommandUsage[interaction.user.id] + cooldown - currentTime) / 1000);
+      await interaction.reply({ content: `You can use this command again in ${remainingTime} seconds.`, ephemeral: true });
+      return;
+    }
+
     await interaction.deferReply();
 
     const packageData = JSON.parse(fs.readFileSync("./package.json", "utf8"));
@@ -34,8 +45,8 @@ module.exports = {
 
     const embed = new MessageEmbed()
         .setAuthor({
-          name: `Download the latest version`,
-          iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
+            name: `Download the latest version`,
+            iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
         })
         .addFields({
             name: "Latest version dev-1.0.0",
@@ -47,10 +58,11 @@ module.exports = {
         })
         .addFields({
             name: "Other download",
-            value: `\`Soon\``
+            value: `\` Soon \``
         })
         .setColor("#51c0c1");
 
+    lastCommandUsage[interaction.user.id] = currentTime;
     await interaction.followUp({ embeds: [embed] });
   }
 }

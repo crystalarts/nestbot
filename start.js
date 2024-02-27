@@ -30,12 +30,23 @@ fs.readdirSync("./events").forEach((dirs) => {
   }
 });
 
+const lastCommandUsage = {};
+
 client.on('messageCreate', async (message) => {
   if (message.author.bot) return;
 
   try {
+    const currentTime = Date.now();
+    const cooldown = 10000;
+
     const parts = message.content.split('/');
     if (parts.length !== 2) return;
+
+    if (lastCommandUsage[message.author.id] && (currentTime - lastCommandUsage[message.author.id]) < cooldown) {
+      const remainingTime = (lastCommandUsage[message.author.id] + cooldown - currentTime) / 1000;
+      message.reply(`Please wait ${remainingTime.toFixed(1)} seconds before using this command again.`);
+      return;
+    }
 
     const [username, repo] = parts;
 
@@ -58,6 +69,7 @@ client.on('messageCreate', async (message) => {
         .setFooter({ text: `⭐ ${data.stargazers_count} • 👀 ${data.watchers_count} • 🍴 ${data.forks} • 🎈 ${data.open_issues}` });
 
     message.reply({ embeds: [embed] });
+    lastCommandUsage[message.author.id] = currentTime;
   } catch (error) {
     console.error('Error:', error.message);
   }
