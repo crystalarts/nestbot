@@ -26,6 +26,7 @@ module.exports = {
     const packageVersion = packageData.version;
 
     let text = '';
+    let releasesText = '';
 
     const owner = "nestnetpl";
     const repo = "nestbot";
@@ -43,6 +44,12 @@ module.exports = {
         text += `[\`${info.sha}\`](${info.url}) - ${info.message}\n`;
     });
 
+    const releases = await fetchReleases(owner, repo);
+
+    releases.forEach(release => {
+        releasesText += `[\`${release.name}\`](${release.html_url}) - ${release.tag_name}\n`;
+    });
+
     const embed = new MessageEmbed()
         .setAuthor({
             name: `Download the latest version`,
@@ -53,7 +60,11 @@ module.exports = {
             value: `\` Unable to download the application \``
         })
         .addFields({
-            name: "NestBot v" + packageVersion,
+            name: "NestBot (downloadable versions)",
+            value: releasesText
+        })
+        .addFields({
+            name: "NestBot (5 latest commits)",
             value: text
         })
         .addFields({
@@ -69,6 +80,15 @@ module.exports = {
 
 async function fetchCommits(owner, repo) {
     const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/commits`, {
+        params: {
+            per_page: 5,
+        },
+    });
+    return response.data;
+}
+
+async function fetchReleases(owner, repo) {
+    const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/releases`, {
         params: {
             per_page: 5,
         },
