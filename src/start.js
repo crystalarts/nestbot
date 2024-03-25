@@ -116,7 +116,7 @@ client.on('messageCreate', async (message) => {
         const state = data.state
         const stateInfo = {
           open: "**🔓 Open**",
-          cloded: "**🔒 Closed**"
+          closed: "**🔒 Closed**"
         }
 
         const embed = new MessageEmbed()
