@@ -13,20 +13,22 @@ module.exports = {
     const packageData = JSON.parse(fs.readFileSync("./package.json", "utf8"));
     const packageVersion = packageData.version;
 
-    client.user.setPresence({
-      activities: [
-        {
-          name: "NestNet.pl v" + packageVersion,
-        },
-      ],
-    });
+    setTimeout(() => {
+      client.user.setPresence({
+        activities: [
+          {
+            name: "NestNet.pl v" + packageVersion,
+          },
+        ],
+      });
+    }, 5000);
 
-    fs.readdirSync(process.cwd() + "/slash").forEach((dirs) => {
+    fs.readdirSync(process.cwd() + "/src/slash").forEach((dirs) => {
       const files = fs
-        .readdirSync(process.cwd() + `/slash/${dirs}`)
+        .readdirSync(process.cwd() + `/src/slash/${dirs}`)
         .filter((files) => files.endsWith(".js"));
       for (const file of files) {
-        const slash = require(process.cwd() + `/slash/${dirs}/${file}`);
+        const slash = require(process.cwd() + `/src/slash/${dirs}/${file}`);
         commands.push(slash.data.toJSON());
       }
     });

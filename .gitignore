@@ -1,2 +1,5 @@
 .env
 node_modules
+database.js
+website.js
+user.js

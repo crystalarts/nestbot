@@ -40,12 +40,6 @@ module.exports = {
             emoji: "1198229791854313512",
             value: "nestbot",
           },
-          {
-            label: "NestNet Now",
-            description: "Click me",
-            emoji: "1198230066283425813",
-            value: "nestnetnow",
-          },
         ])
     );
 
@@ -95,8 +89,8 @@ module.exports = {
       .setDescription(
         "Select one item from the select menu to see available versions for download."
       )
-      .setColor("#51c0c1")
-      .setFooter({ text: "NetNet.pl © 2024 ・ Version: " + packageVersion });
+      .setColor("#f77474")
+      .setFooter({ text: "NestNet © 2024 ・ Version: " + packageVersion });
 
     await interaction.followUp({
       embeds: [embed],
@@ -121,40 +115,10 @@ module.exports = {
                     name: "5 latest commits:",
                     value: text
                 })
-                .setFooter({ text: "NetNet.pl © 2024 ・ Version: " + packageVersion })
-                .setColor("#51c0c1")
+                .setFooter({ text: "NestNet © 2024 ・ Version: " + packageVersion })
+                .setColor("#f77474")
             ],
             allowedMentions: { repliedUser: false },
-            components: [row],
-          });
-        }
-        if (i.values[0] === "nestnetnow") {
-          i.update({
-            embeds: [
-              new MessageEmbed()
-                .setAuthor({
-                    name: `Download the latest version`,
-                    iconURL: client.user.displayAvatarURL({ dynamic: true, size: 1024 }),
-                })
-                .addFields({
-                    name: "Latest version ???",
-                    value: `\` Unable to download the application \``
-                })
-                .addFields({
-                    name: "NestNet Now (downloadable versions)",
-                    value: `\` Soon \``
-                })
-                .addFields({
-                    name: "NestNet Now (5 latest commits)",
-                    value: `\` Soon \``
-                })
-                .addFields({
-                    name: "Other download",
-                    value: `\` Soon \``
-                })
-                .setFooter({ text: "NetNet.pl © 2024 ・ Version: " + packageVersion })
-                .setColor("#51c0c1")
-            ],
             components: [row],
           });
         }
